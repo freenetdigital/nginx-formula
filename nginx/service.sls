@@ -42,3 +42,18 @@ nginx_service:
       {% else %}
       - pkg: nginx_install
       {% endif %}
+
+{% if nginx.limitnofile %}
+/etc/systemd/system/nginx.service.d/limits.conf:
+  file.managed:
+    - makedirs: True
+    - contents:
+      - "[Service]"
+      - "LimitNOFILE={{ nginx.limitnofile }}"
+
+systemctl-reload-nginx:
+  module.run:
+    - name: service.systemctl_reload
+    - onchanges:
+      - file: /etc/systemd/system/nginx.service.d/limits.conf
+{% endif %}
