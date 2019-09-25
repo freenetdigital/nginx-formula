@@ -1,5 +1,43 @@
 # Changelog
 
+# [2.3.0](https://github.com/saltstack-formulas/nginx-formula/compare/v2.2.1...v2.3.0) (2019-09-01)
+
+
+### Continuous Integration
+
+* **kitchen+travis:** replace EOL pre-salted images ([70e1426](https://github.com/saltstack-formulas/nginx-formula/commit/70e1426))
+
+
+### Features
+
+* **passenger:** inc config, snippets, servers, etc ([e07b558](https://github.com/saltstack-formulas/nginx-formula/commit/e07b558))
+
+## [2.2.1](https://github.com/saltstack-formulas/nginx-formula/compare/v2.2.0...v2.2.1) (2019-08-25)
+
+
+### Documentation
+
+* **readme:** update testing section ([182f216](https://github.com/saltstack-formulas/nginx-formula/commit/182f216))
+
+# [2.2.0](https://github.com/saltstack-formulas/nginx-formula/compare/v2.1.0...v2.2.0) (2019-08-12)
+
+
+### Features
+
+* **yamllint:** include for this repo and apply rules throughout ([6b7d1fe](https://github.com/saltstack-formulas/nginx-formula/commit/6b7d1fe))
+
+# [2.1.0](https://github.com/saltstack-formulas/nginx-formula/compare/v2.0.0...v2.1.0) (2019-08-04)
+
+
+### Continuous Integration
+
+* **kitchen+travis:** modify matrix to include `develop` platform ([f6b357d](https://github.com/saltstack-formulas/nginx-formula/commit/f6b357d))
+
+
+### Features
+
+* **linux:** archlinux support (no osfinger grain) ([ab6148c](https://github.com/saltstack-formulas/nginx-formula/commit/ab6148c))
+
 # [2.0.0](https://github.com/saltstack-formulas/nginx-formula/compare/v1.1.0...v2.0.0) (2019-06-19)
 
 

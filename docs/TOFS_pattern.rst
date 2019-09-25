@@ -325,6 +325,7 @@ We can simplify the ``conf.sls`` with the new ``files_switch`` macro to use in t
 
 
 * This uses ``config.get``, searching for ``ntp:tofs:source_files:Configure NTP`` to determine the list of template files to use.
+* If this returns a result, the default of ``['/etc/ntp.conf.jinja']`` will be appended to it.
 * If this does not yield any results, the default of ``['/etc/ntp.conf.jinja']`` will be used.
 
 In ``libtofs.jinja``, we define this new macro ``files_switch``.
@@ -426,7 +427,6 @@ The list of ``source_files`` can be given:
      tofs:
        source_files:
          Configure NTP:
-           - '/etc/ntp.conf.jinja'
            - '/etc/ntp.conf_alt.jinja'
 
 Resulting in:
@@ -434,10 +434,85 @@ Resulting in:
 .. code-block:: sls
 
          - source:
-           - salt://ntp/files/theminion/etc/ntp.conf.jinja
            - salt://ntp/files/theminion/etc/ntp.conf_alt.jinja
-           - salt://ntp/files/Debian/etc/ntp.conf.jinja
+           - salt://ntp/files/theminion/etc/ntp.conf.jinja
            - salt://ntp/files/Debian/etc/ntp.conf_alt.jinja
-           - salt://ntp/files/default/etc/ntp.conf.jinja
+           - salt://ntp/files/Debian/etc/ntp.conf.jinja
            - salt://ntp/files/default/etc/ntp.conf_alt.jinja
+           - salt://ntp/files/default/etc/ntp.conf.jinja
 
+Note: This does *not* override the default value.
+Rather, the value from the pillar/config is prepended to the default.
+
+Using sub-directories for ``components``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If your formula is composed of several components, you may prefer to provides files under sub-directories, like in the `systemd-formula <https://github.com/saltstack-formulas/systemd-formula>`_.
+
+.. code-block::
+
+   /srv/saltstack/systemd-formula/
+     systemd/
+       init.sls
+       libtofs.jinja
+       map.jinja
+       networkd/
+         init.sls
+         files/
+           default/
+             network/
+               99-default.link
+       resolved/
+         init.sls
+         files/
+           default/
+             resolved.conf
+       timesyncd/
+         init.sls
+         files/
+           Arch/
+             resolved.conf
+           Debian/
+             resolved.conf
+           default/
+             resolved.conf
+           Ubuntu/
+             resolved.conf
+
+For example, the following ``formula.component.config`` SLS:
+
+.. code-block:: sls
+
+   {%- from "formula/libtofs.jinja" import files_switch with context %}
+
+   formula configuration file:
+     file.managed:
+       - name: /etc/formula.conf
+       - user: root
+       - group: root
+       - mode: 644
+       - template: jinja
+       - source: {{ files_switch(['formula.conf'],
+                                 lookup='formula',
+                                 use_subpath=True
+                    )
+                 }}
+
+will be rendered on a ``Debian`` minion named ``salt-formula.ci.local`` as:
+
+.. code-block:: sls
+
+   formula configuration file:
+     file.managed:
+       - name: /etc/formula.conf
+       - user: root
+       - group: root
+       - mode: 644
+       - template: jinja
+       - source:
+         - salt://formula/component/files/salt-formula.ci.local/formula.conf
+         - salt://formula/component/files/Debian/formula.conf
+         - salt://formula/component/files/default/formula.conf
+         - salt://formula/files/salt-formula.ci.local/formula.conf
+         - salt://formula/files/Debian/formula.conf
+         - salt://formula/files/default/formula.conf
