@@ -43,7 +43,7 @@ nginx_service:
       - pkg: nginx_install
       {% endif %}
 
-{% if nginx.limitnofile %}
+{% if nginx.limitnofile is defined %}
 /etc/systemd/system/nginx.service.d/limits.conf:
   file.managed:
     - makedirs: True
