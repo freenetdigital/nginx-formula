@@ -52,6 +52,7 @@ nginx_official_repo:
       - pkg: nginx_install
 
    {%- if grains.os not in ('Debian',) %}
+      {%- if from_ppa %}
        ## applies to Ubuntu and derivatives only #}
 nginx_ppa_repo:
   pkgrepo:
@@ -71,6 +72,7 @@ nginx_ppa_repo:
       - pkg: nginx_install
     - watch_in:
       - pkg: nginx_install
+     {%- endif %}
    {%- endif %}
 
 nginx_phusionpassenger_repo:
